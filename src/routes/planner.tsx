@@ -1,61 +1,66 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarRange, LineChart, Layers, Map, Target } from "lucide-react";
+import { useState } from "react";
+import { LayoutDashboard, Map, LineChart, TrendingUp, ShieldAlert, Layers, BrainCircuit, FileText } from "lucide-react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { KpiCard } from "@/components/common/KpiCard";
-import { ChartContainer, MapContainer } from "@/components/common/Panels";
-import { demoCoverage, demoDeformationTrend, demoPanels } from "@/data";
+import { PlanningOverviewTab } from "@/components/planner/PlanningOverviewTab";
+import { MinePanelMapTab } from "@/components/planner/MinePanelMapTab";
+import { DeformationHistoryTab } from "@/components/planner/DeformationHistoryTab";
+import { RiskTrendsTab } from "@/components/planner/RiskTrendsTab";
+import { MonitoringCoverageTab } from "@/components/planner/MonitoringCoverageTab";
+import { PanelComparisonTab } from "@/components/planner/PanelComparisonTab";
+import { PlanningIntelligenceTab } from "@/components/planner/PlanningIntelligenceTab";
+import { ReportsTab } from "@/components/planner/ReportsTab";
 
 export const Route = createFileRoute("/planner")({
   head: () => ({
     meta: [
       { title: "Planner workspace — BHURAKSHAK" },
-      {
-        name: "description",
-        content: "Deformation trends, predicted subsidence envelopes and panel sequencing analysis.",
-      },
-      { property: "og:title", content: "Planner workspace — BHURAKSHAK" },
-      {
-        property: "og:description",
-        content: "Deformation trends, predicted subsidence envelopes and panel sequencing analysis.",
-      },
+      { name: "description", content: "Long-term ground-risk intelligence and monitoring planning." },
     ],
   }),
   component: PlannerPage,
 });
 
 const nav = [
-  { id: "trends", label: "Deformation trends", icon: LineChart },
-  { id: "panels", label: "Panels", icon: Layers },
-  { id: "prediction", label: "Prediction", icon: Target },
-  { id: "coverage", label: "Coverage", icon: Map },
-  { id: "sequence", label: "Extraction plan", icon: CalendarRange },
+  { id: "overview", label: "Planning Overview", icon: LayoutDashboard },
+  { id: "map", label: "Mine & Panel Map", icon: Map },
+  { id: "history", label: "Deformation History", icon: LineChart },
+  { id: "trends", label: "Risk Trends", icon: TrendingUp },
+  { id: "coverage", label: "Monitoring Coverage", icon: ShieldAlert },
+  { id: "comparison", label: "Panel Comparison", icon: Layers },
+  { id: "intelligence", label: "Planning Intelligence", icon: BrainCircuit },
+  { id: "reports", label: "Reports", icon: FileText },
 ];
 
 function PlannerPage() {
-  const latest = demoDeformationTrend.series.at(-1)!;
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "overview": return <PlanningOverviewTab />;
+      case "map": return <MinePanelMapTab />;
+      case "history": return <DeformationHistoryTab />;
+      case "trends": return <RiskTrendsTab />;
+      case "coverage": return <MonitoringCoverageTab />;
+      case "comparison": return <PanelComparisonTab />;
+      case "intelligence": return <PlanningIntelligenceTab />;
+      case "reports": return <ReportsTab />;
+      default: return <PlanningOverviewTab />;
+    }
+  };
+
+  const currentNav = nav.find(n => n.id === activeTab);
+
   return (
     <DashboardShell
       role="planner"
       nav={nav}
-      title="Planning and prediction"
-      subtitle="Demo Colliery Alpha · synthetic demo data"
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      title={currentNav?.label || "Planning Overview"}
+      subtitle="Demo Colliery Alpha · Long-Term Strategic View"
     >
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Panels tracked" value={demoPanels.length} icon={Layers} hint="Active and planned" />
-        <KpiCard label="Cumulative subsidence" value={latest.value} unit="mm" icon={LineChart} hint="Panel A1 · demo trend" />
-        <KpiCard label="Coverage" value={Math.round((demoCoverage.monitoredAreaKm2 / demoCoverage.totalAreaKm2) * 100)} unit="%" icon={Map} hint="Instrumented surface area" />
-        <KpiCard label="Prediction horizon" value={7} unit="days" icon={Target} hint="Demo configuration" />
-      </div>
-
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <ChartContainer
-          className="lg:col-span-2"
-          title="Subsidence trend vs prediction"
-          description="Chart layer arrives in a later stage"
-          height={300}
-        />
-        <MapContainer title="Panel geometry" description="Predicted envelopes overlay later" height={300} />
-      </div>
+      {renderTabContent()}
     </DashboardShell>
   );
 }

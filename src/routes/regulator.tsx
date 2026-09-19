@@ -1,77 +1,60 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ClipboardList, FileCheck2, Map, ShieldCheck, Building2 } from "lucide-react";
+import { useState } from "react";
+import { Globe2, Briefcase, Map, ClipboardCheck, HeartPulse, FileText } from "lucide-react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { KpiCard } from "@/components/common/KpiCard";
-import { DataTable, type Column } from "@/components/common/DataTable";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { MapContainer } from "@/components/common/Panels";
-import { demoAlerts, demoCoverage, demoMines } from "@/data";
-import type { Alert } from "@/types";
+import { NationalOverviewTab } from "@/components/regulator/NationalOverviewTab";
+import { MinePortfolioTab } from "@/components/regulator/MinePortfolioTab";
+import { MineDetailTab } from "@/components/regulator/MineDetailTab";
+import { ReviewCenterTab } from "@/components/regulator/ReviewCenterTab";
+import { MonitoringHealthTab } from "@/components/regulator/MonitoringHealthTab";
+import { RegulatorReportsTab } from "@/components/regulator/RegulatorReportsTab";
 
 export const Route = createFileRoute("/regulator")({
   head: () => ({
     meta: [
       { title: "Regulator workspace — BHURAKSHAK" },
-      {
-        name: "description",
-        content: "Oversight view of monitoring coverage and evidence trails behind subsidence alerts.",
-      },
-      { property: "og:title", content: "Regulator workspace — BHURAKSHAK" },
-      {
-        property: "og:description",
-        content: "Oversight view of monitoring coverage and evidence trails behind subsidence alerts.",
-      },
+      { name: "description", content: "Multi-mine monitoring oversight and evidence-based review." },
     ],
   }),
   component: RegulatorPage,
 });
 
 const nav = [
-  { id: "overview", label: "Oversight", icon: ShieldCheck },
-  { id: "mines", label: "Mines", icon: Building2 },
-  { id: "alerts", label: "Alert register", icon: ClipboardList },
-  { id: "evidence", label: "Evidence trail", icon: FileCheck2 },
-  { id: "map", label: "Regional map", icon: Map },
-];
-
-const columns: Column<Alert>[] = [
-  { key: "id", header: "Reference", render: (a) => <span className="numeric-readout">{a.id}</span> },
-  { key: "title", header: "Alert", render: (a) => a.title },
-  {
-    key: "severity",
-    header: "Severity",
-    render: (a) => <StatusBadge label={a.severity} tone={a.severity === "critical" ? "critical" : a.severity === "warning" ? "warning" : "caution"} />,
-  },
-  { key: "status", header: "Status", render: (a) => <StatusBadge label={a.status} tone="neutral" dot={false} /> },
-  {
-    key: "raised",
-    header: "Raised",
-    align: "right",
-    render: (a) => <span className="numeric-readout text-xs">{new Date(a.raisedAt).toLocaleString()}</span>,
-  },
+  { id: "overview", label: "National Overview", icon: Globe2 },
+  { id: "portfolio", label: "Mine Portfolio", icon: Briefcase },
+  { id: "detail", label: "Mine Detail", icon: Map },
+  { id: "review", label: "Review Center", icon: ClipboardCheck },
+  { id: "health", label: "Monitoring Health", icon: HeartPulse },
+  { id: "reports", label: "Reports", icon: FileText },
 ];
 
 function RegulatorPage() {
+  const [activeTab, setActiveTab] = useState("overview");
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "overview": return <NationalOverviewTab />;
+      case "portfolio": return <MinePortfolioTab />;
+      case "detail": return <MineDetailTab />;
+      case "review": return <ReviewCenterTab />;
+      case "health": return <MonitoringHealthTab />;
+      case "reports": return <RegulatorReportsTab />;
+      default: return <NationalOverviewTab />;
+    }
+  };
+
+  const currentNav = nav.find(n => n.id === activeTab);
+
   return (
     <DashboardShell
       role="regulator"
       nav={nav}
-      title="Regulatory oversight"
-      subtitle="Prototype register · synthetic demo data, no official classifications"
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      title={currentNav?.label || "National Overview"}
+      subtitle="Safety Oversight & Institutional Review"
     >
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Mines in view" value={demoMines.length} icon={Building2} hint="Demo registry" />
-        <KpiCard label="Alerts on record" value={demoAlerts.length} icon={ClipboardList} hint="With evidence attached" />
-        <KpiCard label="Monitoring coverage" value={Math.round((demoCoverage.monitoredAreaKm2 / demoCoverage.totalAreaKm2) * 100)} unit="%" icon={Map} />
-        <KpiCard label="Data uptime" value={demoCoverage.dataUptimePct} unit="%" icon={ShieldCheck} hint="Last 24 hours" />
-      </div>
-
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <DataTable columns={columns} rows={demoAlerts} rowKey={(a) => a.id} />
-        </div>
-        <MapContainer title="Regional risk map" description="Cross-mine layer arrives later" height={300} />
-      </div>
+      {renderTabContent()}
     </DashboardShell>
   );
 }
