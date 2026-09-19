@@ -34,6 +34,11 @@ export interface GeoPoint {
   lng: number;
 }
 
+export interface PolygonGeometry {
+  type: "Polygon";
+  coordinates: number[][][];
+}
+
 export interface Mine {
   id: string;
   name: string;
@@ -51,7 +56,7 @@ export interface Panel {
   name: string;
   depthM: number;
   extractionStatus: "planned" | "active" | "completed";
-  boundary: GeoJSON.Polygon;
+  boundary: PolygonGeometry;
   riskLevel: RiskLevel;
 }
 
@@ -91,7 +96,7 @@ export interface RiskZone {
   panelId: string;
   level: RiskLevel;
   confidencePct: number;
-  geometry: GeoJSON.Polygon;
+  geometry: PolygonGeometry;
   drivers: string[];
   updatedAt: string;
 }
