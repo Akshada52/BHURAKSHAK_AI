@@ -193,3 +193,57 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
+
+/* Landing-page schematic animations */
+@keyframes ping-ring {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+@keyframes soft-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@utility ping-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ping-ring 2.8s ease-out infinite;
+}
+
+@utility dash-flow {
+  animation: dash-flow 1.8s linear infinite;
+}
+
+@utility soft-blink {
+  animation: soft-blink 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ping-ring,
+  .dash-flow,
+  .soft-blink {
+    animation: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
