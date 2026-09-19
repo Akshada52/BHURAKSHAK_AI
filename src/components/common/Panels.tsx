@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 
 interface SectionPanelProps {
   title: string;
-  description?: string;
-  actions?: ReactNode;
-  children?: ReactNode;
-  className?: string;
-  bodyClassName?: string;
+  description?: string | undefined;
+  actions?: ReactNode | undefined;
+  children?: ReactNode | undefined;
+  className?: string | undefined;
+  bodyClassName?: string | undefined;
 }
 
 function SectionPanel({
