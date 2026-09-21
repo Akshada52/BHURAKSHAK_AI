@@ -15,47 +15,80 @@ export function Sidebar({
   items,
   activeTab,
   onTabChange,
+  accent,
 }: {
   role: UserRole;
   items: NavItem[];
   activeTab?: string;
   onTabChange?: (id: string) => void;
+  accent?: string;
 }) {
   const definition = getRole(role);
+  const activeColor = accent ?? "#3b82f6";
+
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground lg:flex">
-      <div className="border-b border-sidebar-border px-4 py-4">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/60">
+    <aside className="hidden w-[220px] shrink-0 flex-col bg-[#1a2035] text-white lg:flex border-r border-white/5">
+      {/* Workspace label */}
+      <div className="px-4 py-4 border-b border-white/10">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">
           Workspace
         </p>
-        <p className="mt-1 text-sm font-semibold">{definition.title}</p>
+        <p className="mt-1 text-sm font-bold text-white">{definition.title}</p>
       </div>
-      <nav className="flex-1 space-y-1 p-3">
+
+      {/* Nav items */}
+      <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
         {items.map((item) => {
-          const isActive = activeTab ? activeTab === item.id : false;
+          const isActive = activeTab === item.id;
           return (
             <button
               key={item.id}
               type="button"
-              onClick={() => onTabChange && onTabChange(item.id)}
-              className={`flex w-full items-center gap-2.5 rounded-sm px-2.5 py-2 text-sm transition-colors ${
+              onClick={() => onTabChange?.(item.id)}
+              className="flex w-full items-center gap-3 rounded px-3 py-2.5 text-sm transition-all"
+              style={
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                  : "text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
-              }`}
+                  ? {
+                      backgroundColor: activeColor + "22",
+                      color: activeColor,
+                      borderLeft: `3px solid ${activeColor}`,
+                      paddingLeft: "9px",
+                      fontWeight: 600,
+                    }
+                  : {
+                      color: "rgba(255,255,255,0.6)",
+                      borderLeft: "3px solid transparent",
+                      paddingLeft: "9px",
+                    }
+              }
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(255,255,255,0.06)";
+                  (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.9)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
+                  (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.6)";
+                }
+              }}
             >
-              <item.icon className="size-4" aria-hidden />
-              {item.label}
+              <item.icon className="size-4 shrink-0" aria-hidden />
+              <span className="truncate">{item.label}</span>
             </button>
           );
         })}
       </nav>
-      <div className="border-t border-sidebar-border p-3">
+
+      {/* Footer */}
+      <div className="border-t border-white/10 p-2">
         <Link
           to="/system"
-          className="flex items-center gap-2.5 rounded-sm px-2.5 py-2 text-sm text-sidebar-foreground/75 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+          className="flex items-center gap-3 rounded px-3 py-2.5 text-sm text-white/50 hover:bg-white/6 hover:text-white/80 transition-colors"
+          style={{ borderLeft: "3px solid transparent", paddingLeft: "9px" }}
         >
-          <LayoutGrid className="size-4" aria-hidden />
+          <LayoutGrid className="size-4 shrink-0" aria-hidden />
           Switch role
         </Link>
       </div>

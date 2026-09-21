@@ -3,9 +3,7 @@ import type { UserRole } from "@/types";
 import { demoSystemStatus, getRole } from "@/data";
 import { Header } from "./Header";
 import { Sidebar, type NavItem } from "./Sidebar";
-import { SystemStatus } from "@/components/common/SystemStatus";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldAlert, Mountain, Activity } from "lucide-react";
 
 export function DashboardShell({
   role,
@@ -26,48 +24,47 @@ export function DashboardShell({
 }) {
   const definition = getRole(role);
 
-  const getRoleTheme = (r: UserRole) => {
-    switch (r) {
-      case 'operator': return { border: 'border-b-critical/50', bg: 'bg-critical/5', icon: <Activity className="size-4 text-critical" /> };
-      case 'planner': return { border: 'border-b-primary/50', bg: 'bg-primary/5', icon: <Mountain className="size-4 text-primary" /> };
-      case 'regulator': return { border: 'border-b-purple-500/50', bg: 'bg-purple-500/5', icon: <ShieldAlert className="size-4 text-purple-500" /> };
-      default: return { border: 'border-b-border', bg: 'bg-surface-panel', icon: null };
-    }
+  const roleAccent: Record<UserRole, string> = {
+    operator: "#ef4444",
+    planner: "#3b82f6",
+    regulator: "#8b5cf6",
   };
 
-  const theme = getRoleTheme(role);
+  const accent = roleAccent[role] ?? "#3b82f6";
 
   return (
-    <div className="flex min-h-screen flex-col bg-background font-sans text-foreground">
-      <Header
-        right={
-          <div className="flex items-center gap-3 bg-black/20 px-3 py-1 rounded">
-            {theme.icon}
-            <span className="text-xs uppercase font-bold tracking-widest text-white/90">
-              {definition.title}
-            </span>
-          </div>
-        }
-      />
+    <div className="flex min-h-screen flex-col bg-[#f4f7fa] font-sans text-foreground">
+      <Header role={role} accent={accent} roleLabel={definition.title} />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar role={role} items={nav} activeTab={activeTab} onTabChange={onTabChange} />
-        <main className="min-w-0 flex-1 flex flex-col h-[calc(100vh-3.5rem)]">
-          <div className={`flex flex-wrap items-center gap-3 border-b border-border ${theme.bg} ${theme.border} border-b-2 px-6 py-4 shadow-sm z-10 relative`}>
+        <Sidebar role={role} items={nav} activeTab={activeTab} onTabChange={onTabChange} accent={accent} />
+        <main className="min-w-0 flex-1 flex flex-col h-[calc(100vh-3.5rem)] overflow-hidden">
+          {/* Page header bar */}
+          <div
+            className="flex flex-wrap items-center gap-3 bg-white border-b border-gray-200 px-6 py-4 shadow-sm z-10 relative"
+            style={{ borderLeft: `4px solid ${accent}` }}
+          >
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
-              {subtitle && <p className="text-sm font-medium text-muted-foreground mt-0.5">{subtitle}</p>}
+              <h1 className="text-xl font-bold tracking-tight text-gray-800">{title}</h1>
+              {subtitle && <p className="text-xs font-medium text-gray-500 mt-0.5">{subtitle}</p>}
             </div>
-            <SystemStatus status={demoSystemStatus} compact className="ml-auto" />
+            {/* Live status pill */}
+            <div className="ml-auto flex items-center gap-2 bg-gray-100 rounded px-3 py-1.5 text-xs font-semibold text-gray-600">
+              <span
+                className="inline-block size-2 rounded-full animate-pulse"
+                style={{ backgroundColor: demoSystemStatus.overall === "ok" ? "#22c55e" : "#ef4444" }}
+              />
+              {demoSystemStatus.overall === "ok" ? "All Systems Nominal" : "System Alert"}
+            </div>
           </div>
-          <div className="flex-1 overflow-hidden bg-muted/20 relative">
+
+          <div className="flex-1 overflow-auto p-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab || title}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="absolute inset-0 p-6 overflow-auto"
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18 }}
               >
                 {children}
               </motion.div>

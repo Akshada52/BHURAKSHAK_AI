@@ -171,16 +171,36 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     font-weight: 700;
   }
-  
-  h1 { font-size: 2.25rem; line-height: 2.5rem; }
-  h2 { font-size: 1.875rem; line-height: 2.25rem; }
-  h3 { font-size: 1.5rem; line-height: 2rem; }
-  h4 { font-size: 1.25rem; line-height: 1.75rem; }
+
+  h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
 }
 
 /* Uppercase micro-label used across command-centre panels */
@@ -205,6 +225,7 @@
     transform: scale(0.35);
     opacity: 0.85;
   }
+
   100% {
     transform: scale(2.6);
     opacity: 0;
@@ -218,10 +239,12 @@
 }
 
 @keyframes soft-blink {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.3;
   }
@@ -242,6 +265,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .ping-ring,
   .dash-flow,
   .soft-blink {

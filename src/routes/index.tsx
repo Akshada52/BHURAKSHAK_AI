@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import ImmersiveFullscreenNavDemo from "@/components/landing/ImmersiveFullscreenNavDemo";
 import {
   Activity,
   ArrowRight,
@@ -12,11 +13,12 @@ import {
   Radar,
   Satellite,
   ShieldAlert,
-  Wifi,
   WifiOff,
 } from "lucide-react";
 import { HeroVisual } from "@/components/landing/HeroVisual";
 import { motion } from "framer-motion";
+import { Hero } from "@/components/ui/animated-hero";
+import { AboutBento } from "@/components/ui/about-bento";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -118,17 +120,7 @@ const chain = [
 function Landing() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary/20 selection:text-primary">
-      {/* ===== Government-style header ===== */}
-      <header className="border-b bg-card text-card-foreground shadow-sm sticky top-0 z-50">
-        <div className="mx-auto flex max-w-7xl items-center justify-start px-4 py-3 sm:px-6">
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md group-hover:bg-primary/90 transition-colors">
-              <Mountain className="size-5" aria-hidden />
-            </span>
-            <span className="font-display text-lg font-bold tracking-[0.2em] uppercase">BHURAKSHAK</span>
-          </Link>
-        </div>
-      </header>
+      <ImmersiveFullscreenNavDemo />
 
       {/* ===== Hero ===== */}
       <section className="relative overflow-hidden border-b bg-card min-h-[600px] flex items-center">
@@ -166,6 +158,11 @@ function Landing() {
             </div>
           </motion.div>
         </div>
+      </section>
+
+      {/* ===== Animated Hero ===== */}
+      <section className="border-b bg-background">
+        <Hero />
       </section>
 
       {/* ===== Section 4: three decision views ===== */}
@@ -210,6 +207,9 @@ function Landing() {
           </div>
         </div>
       </section>
+
+      {/* ===== About Bento ===== */}
+      <AboutBento />
 
       {/* ===== Section 2: workflow ===== */}
       <section id="how-it-works" className="border-b bg-muted/30">
