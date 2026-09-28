@@ -31,7 +31,7 @@ export function MineDetailTab() {
         {/* Main GIS and Overview */}
         <div className="lg:col-span-2 space-y-6">
           <div className="rounded-xl border bg-card shadow-sm overflow-hidden h-[500px] relative">
-            <MapCore initialLayers={{ sdn: true, hmn: true, vectors: true, heatmap: true }} />
+            <MapCore />
             <div className="absolute top-4 left-4 bg-background/90 backdrop-blur border p-2 rounded text-xs font-bold uppercase tracking-wider">
               Site GIS Explorer
             </div>

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import Map, { NavigationControl, Source, Layer, MapLayerMouseEvent } from "react-map-gl/maplibre";
+import Map, { NavigationControl, Source, Layer, MapLayerMouseEvent } from "react-map-gl/mapbox";
 import { Briefcase, AlertTriangle, ShieldAlert, WifiOff, MapPin, Filter } from "lucide-react";
 import { KpiCard } from "@/components/common/KpiCard";
 import { regulatorKpis, nationalMinesGeoJSON } from "@/data/regulatorMocks";
-import "maplibre-gl/dist/maplibre-gl.css";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+const TOKEN = (import.meta.env.VITE_MAPBOX_TOKEN as string) ?? "";
 
 const INITIAL_VIEW_STATE = {
   longitude: 80.9629,
@@ -65,9 +67,9 @@ export function NationalOverviewTab() {
 
       <div className="rounded-xl border bg-card shadow-sm overflow-hidden h-[500px] relative">
         <Map
-          mapLibreLogo={true}
+          mapboxAccessToken={TOKEN}
           initialViewState={INITIAL_VIEW_STATE}
-          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+          mapStyle="mapbox://styles/mapbox/dark-v11"
           interactiveLayerIds={['mines-layer']}
           onMouseMove={handleMouseMove}
           onMouseLeave={() => setHoverInfo(null)}

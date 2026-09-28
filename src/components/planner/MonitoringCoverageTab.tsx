@@ -26,7 +26,7 @@ export function MonitoringCoverageTab() {
       <div className="grid lg:grid-cols-3 gap-6">
         
         <div className="lg:col-span-2 rounded-xl border bg-card shadow-sm overflow-hidden min-h-[400px] relative">
-          <MapCore initialLayers={coverageLayers} />
+          <MapCore />
         </div>
 
         <div className="flex flex-col gap-4">

@@ -69,8 +69,8 @@ export function MapContainer({
       bodyClassName="p-0"
     >
       <div
-        style={{ minHeight: height }}
-        className="relative w-full overflow-hidden rounded-b-md bg-[repeating-linear-gradient(45deg,var(--color-muted)_0_12px,transparent_12px_24px)]"
+        style={{ height: height }}
+        className="relative w-full overflow-hidden rounded-b-md"
       >
         {children ?? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-muted-foreground">

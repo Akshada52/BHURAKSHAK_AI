@@ -82,9 +82,9 @@ export function PlanningOverviewTab() {
           <MapContainer
             title="Strategic Mine Overview"
             description="Showing structural gaps and historical risk zones."
-            className="min-h-[420px] bg-white border border-gray-200 rounded-lg shadow-sm"
+            className="bg-white border border-gray-200 rounded-lg shadow-sm"
           >
-            <MapCore initialLayers={{ sdn: false, hmn: false, vectors: true, heatmap: true }} />
+            <MapCore />
           </MapContainer>
         </div>
 

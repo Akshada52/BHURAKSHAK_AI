@@ -1,40 +1,57 @@
-import { Activity, Bell, Radio, ShieldAlert, Wifi, Clock, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
+import { Activity, Bell, Radio, ShieldAlert, Wifi, Clock, AlertTriangle, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { KpiCard } from "@/components/common/KpiCard";
 import { MapContainer } from "@/components/common/Panels";
-import { demoOperatorCoverage, demoOperatorAlerts, demoSensors } from "@/data/operatorMocks";
+import { demoOperatorAlerts } from "@/data/operatorMocks";
 import { MapCore } from "@/components/gis/MapCore";
+import { useLiveKpi, useLiveAlerts, useKmlSensorNodes } from "@/hooks/useLiveMonitoring";
 
 const severityBadge: Record<string, string> = {
   warning: "bg-red-100 text-red-700",
-  watch: "bg-amber-100 text-amber-700",
-  normal: "bg-green-100 text-green-700",
+  watch:   "bg-amber-100 text-amber-700",
+  info:    "bg-green-100 text-green-700",
 };
 
 const statusBadge: Record<string, string> = {
-  open: "bg-red-100 text-red-700",
+  open:         "bg-red-100 text-red-700",
   acknowledged: "bg-blue-100 text-blue-700",
-  resolved: "bg-green-100 text-green-700",
+  resolved:     "bg-green-100 text-green-700",
 };
 
 export function OverviewTab() {
-  const topSensors = demoSensors.slice(0, 8);
+  const { data: kpi,     loading: kpiLoading   } = useLiveKpi();
+  const { data: alerts,  loading: alertLoading  } = useLiveAlerts();
+  const { data: nodes,   loading: nodesLoading  } = useKmlSensorNodes();
+
+  // Top 8 nodes for the table
+  const topNodes = nodes.slice(0, 8);
+
+  // Derive mine risk from live data
+  const warningCount = nodes.filter((n) => n.status === "Warning").length;
+  const mineRisk     = warningCount > 5 ? "WARNING" : warningCount > 0 ? "WATCH" : "NORMAL";
+  const riskColor    = mineRisk === "WARNING" ? "#ef4444" : mineRisk === "WATCH" ? "#f59e0b" : "#22c55e";
+  const riskBg       = mineRisk === "WARNING" ? "#fef2f2" : mineRisk === "WATCH" ? "#fffbeb" : "#f0fdf4";
+  const riskText     = mineRisk === "WARNING" ? "text-red-600" : mineRisk === "WATCH" ? "text-amber-600" : "text-green-600";
+
+  const activeWarnings = alerts.filter((a) => a.severity === "warning").length;
+  const latestAlert    = alerts[0];
 
   return (
     <div className="space-y-5">
-      {/* KPI row */}
+
+      {/* ── KPI row ──────────────────────────────────────────────────────── */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           label="Current Mine Risk"
-          value="WATCH"
+          value={kpiLoading ? "—" : mineRisk}
           icon={AlertTriangle}
-          hint="Panel P-12 elevated"
-          iconColor="#f59e0b"
-          iconBg="#fffbeb"
-          valueClassName="text-amber-600"
+          hint={kpiLoading ? "Loading…" : `${warningCount} nodes in warning`}
+          iconColor={riskColor}
+          iconBg={riskBg}
+          valueClassName={riskText}
         />
         <KpiCard
           label="Active Warnings"
-          value={demoOperatorAlerts.filter((a) => a.severity === "warning").length}
+          value={alertLoading ? "—" : activeWarnings}
           icon={Bell}
           hint="Requires acknowledgment"
           iconColor="#ef4444"
@@ -43,78 +60,85 @@ export function OverviewTab() {
         />
         <KpiCard
           label="High-Risk Zones"
-          value="1"
+          value={kpiLoading ? "—" : kpi.activeAlertZones}
           icon={ShieldAlert}
-          hint="Zone Z-04"
+          hint="From live anomaly data"
           iconColor="#ef4444"
           iconBg="#fef2f2"
           valueClassName="text-red-600"
         />
         <KpiCard
           label="Latest Alert"
-          value="12 mins ago"
+          value={alertLoading || !latestAlert ? "None" : latestAlert.time}
           icon={Clock}
-          hint="Panel P-12, Zone Z-04"
+          hint={latestAlert ? latestAlert.location : "All clear"}
           iconColor="#6366f1"
           iconBg="#eef2ff"
         />
         <KpiCard
-          label="Sensors Online"
-          value={demoOperatorCoverage.activeSensors}
+          label="Sensor Nodes Online"
+          value={kpiLoading ? "—" : kpi.activeNodes}
           icon={Radio}
-          hint="100% active"
+          hint={kpiLoading ? "—" : `of ${kpi.deployedNodes} deployed`}
           iconColor="#22c55e"
           iconBg="#f0fdf4"
           valueClassName="text-green-600"
         />
         <KpiCard
-          label="Sensors Offline"
-          value={demoOperatorCoverage.offlineSensors}
+          label="Nodes Offline"
+          value={kpiLoading ? "—" : kpi.offlineSensors}
           icon={Radio}
-          hint="0 nodes down"
+          hint="Status: Warning"
           iconColor="#64748b"
           iconBg="#f8fafc"
         />
         <KpiCard
           label="Network Health"
-          value="99.8%"
+          value={kpiLoading ? "—" : `${kpi.networkHealth}%`}
           icon={Wifi}
-          hint="Stable connection"
+          hint={kpiLoading ? "—" : kpi.networkHealth > 95 ? "Excellent" : kpi.networkHealth > 85 ? "Good" : "Degraded"}
           iconColor="#22c55e"
           iconBg="#f0fdf4"
           valueClassName="text-green-600"
         />
         <KpiCard
-          label="Last Data Sync"
-          value="Just now"
+          label="Principal Nodes"
+          value={kpiLoading ? "—" : kpi.principalNodes}
           icon={Activity}
-          hint="Live stream active"
+          hint="PN1 – PN4 all online"
           iconColor="#3b82f6"
           iconBg="#eff6ff"
         />
       </div>
 
-      {/* Map + Alerts row */}
+      {/* ── Map + Alerts row ─────────────────────────────────────────────── */}
       <div className="grid gap-5 lg:grid-cols-3">
         {/* Map */}
         <div className="lg:col-span-2">
           <MapContainer
             title="Mine Overview"
-            description="GIS Map showing live node statuses, risk zones, and structural bounds."
-            className="min-h-[420px] bg-white border border-gray-200 rounded-lg shadow-sm"
+            description="GIS map — live KML layers: boundary, panels, risk zones, sensor nodes."
+            className="bg-white border border-gray-200 rounded-lg shadow-sm"
+            height={480}
           >
             <MapCore />
           </MapContainer>
         </div>
 
-        {/* Recent Alerts */}
+        {/* Recent Alerts — live from Supabase */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 className="text-sm font-bold text-gray-800">Recent Alerts</h3>
-            <span className="text-xs text-gray-400">{demoOperatorAlerts.length} total</span>
+            <div className="flex items-center gap-2">
+              {alertLoading && <RefreshCw className="size-3 text-blue-400 animate-spin" />}
+              <span className="text-xs text-gray-400">{alerts.length} active</span>
+            </div>
           </div>
           <div className="flex-1 divide-y divide-gray-100 overflow-auto">
-            {demoOperatorAlerts.map((alert) => (
+            {alerts.length === 0 && !alertLoading && (
+              <div className="px-5 py-6 text-center text-xs text-gray-400">No active alerts</div>
+            )}
+            {alerts.map((alert) => (
               <div key={alert.id} className="px-5 py-3.5 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <span className="text-xs font-mono text-gray-400">{alert.id}</span>
@@ -135,44 +159,72 @@ export function OverviewTab() {
         </div>
       </div>
 
-      {/* Sensor status table */}
+      {/* ── KML Sensor Node table (live from Supabase) ───────────────────── */}
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h3 className="text-sm font-bold text-gray-800">Sensor Network Status</h3>
-          <span className="text-xs text-gray-400">Showing 8 of {demoSensors.length}</span>
+          <div className="flex items-center gap-2">
+            {nodesLoading && <RefreshCw className="size-3 text-blue-400 animate-spin" />}
+            <span className="text-xs text-gray-400">
+              Showing {topNodes.length} of {nodes.length} nodes
+            </span>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-xs font-semibold uppercase tracking-wider text-gray-500">
                 <th className="px-5 py-3 text-left">Node ID</th>
-                <th className="px-5 py-3 text-left">Location</th>
-                <th className="px-5 py-3 text-right">Tilt (°)</th>
-                <th className="px-5 py-3 text-right">Vibration</th>
+                <th className="px-5 py-3 text-left">Principal Node</th>
+                <th className="px-5 py-3 text-left">Type</th>
+                <th className="px-5 py-3 text-right">Reading</th>
                 <th className="px-5 py-3 text-right">Battery %</th>
                 <th className="px-5 py-3 text-right">Signal %</th>
+                <th className="px-5 py-3 text-left">Last Update</th>
                 <th className="px-5 py-3 text-center">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {topSensors.map((s) => (
+              {nodesLoading && (
+                <tr>
+                  <td colSpan={8} className="px-5 py-6 text-center text-xs text-gray-400">
+                    <RefreshCw className="size-4 animate-spin inline mr-2 text-blue-400" />
+                    Loading live sensor data…
+                  </td>
+                </tr>
+              )}
+              {!nodesLoading && topNodes.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="px-5 py-6 text-center text-xs text-gray-400">
+                    No sensor data — run seed_v2.sql in Supabase dashboard.
+                  </td>
+                </tr>
+              )}
+              {topNodes.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3 font-mono font-semibold text-gray-700">{s.id}</td>
-                  <td className="px-5 py-3 text-gray-600">{s.location}</td>
-                  <td className="px-5 py-3 text-right font-mono text-gray-700">{s.tilt}</td>
-                  <td className="px-5 py-3 text-right font-mono text-gray-700">{s.vibration}</td>
-                  <td className="px-5 py-3 text-right">
-                    <span className={`font-mono font-semibold ${Number(s.battery) < 20 ? "text-red-600" : "text-gray-700"}`}>
-                      {s.battery}%
+                  <td className="px-5 py-3">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">
+                      {s.pnId}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-right font-mono text-gray-700">{s.signal}%</td>
+                  <td className="px-5 py-3 text-gray-600">{s.type}</td>
+                  <td className="px-5 py-3 text-right font-mono text-gray-700">
+                    {s.latestReading.toFixed(2)} {s.unit}
+                  </td>
+                  <td className="px-5 py-3 text-right">
+                    <span className={`font-mono font-semibold ${s.batteryPct < 20 ? "text-red-600" : "text-gray-700"}`}>
+                      {s.batteryPct}%
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-right font-mono text-gray-700">{s.signalPct}%</td>
+                  <td className="px-5 py-3 text-xs text-gray-400 font-mono">{s.lastReadingAt}</td>
                   <td className="px-5 py-3 text-center">
-                    {s.status === "normal" ? (
+                    {s.status === "Normal" ? (
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-green-100 text-green-700">
                         <CheckCircle className="size-3" /> Normal
                       </span>
-                    ) : s.status === "warning" ? (
+                    ) : s.status === "Warning" ? (
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-100 text-red-700">
                         <XCircle className="size-3" /> Warning
                       </span>
@@ -188,6 +240,7 @@ export function OverviewTab() {
           </table>
         </div>
       </div>
+
     </div>
   );
 }

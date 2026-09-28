@@ -49,7 +49,6 @@ export function Sidebar({
               style={
                 isActive
                   ? {
-                      backgroundColor: activeColor + "22",
                       color: activeColor,
                       borderLeft: `3px solid ${activeColor}`,
                       paddingLeft: "9px",

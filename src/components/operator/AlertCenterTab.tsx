@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, AlertTriangle, ShieldAlert, CheckCircle2, FileText, ArrowRight } from "lucide-react";
+import { Bell, AlertTriangle, ShieldAlert, CheckCircle2, FileText, ArrowRight, Map } from "lucide-react";
 import { demoOperatorAlerts } from "@/data/operatorMocks";
 
 export function AlertCenterTab() {

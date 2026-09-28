@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Activity, Bell, Gauge, Radio, Map, LineChart, Server, FileText, Settings } from "lucide-react";
+import { Activity, Bell, Gauge, Radio, LineChart, Server, FileText, Settings } from "lucide-react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { OverviewTab } from "@/components/operator/OverviewTab";
 import { LiveMonitoringTab } from "@/components/operator/LiveMonitoringTab";
-import { RiskMapTab } from "@/components/operator/RiskMapTab";
 import { AlertCenterTab } from "@/components/operator/AlertCenterTab";
 import { AnalyticsTab } from "@/components/operator/AnalyticsTab";
 import { SensorNetworkTab } from "@/components/operator/SensorNetworkTab";
@@ -22,15 +21,14 @@ export const Route = createFileRoute("/operator")({
 });
 
 const nav = [
-  { id: "overview", label: "Overview", icon: Gauge },
-  { id: "live", label: "Live Monitoring", icon: Activity },
-  { id: "map", label: "Risk Map", icon: Map },
-  { id: "sensors", label: "Sensor Network", icon: Radio },
-  { id: "alerts", label: "Alerts", icon: Bell },
-  { id: "analytics", label: "Analytics & Prediction", icon: LineChart },
-  { id: "management", label: "Mine / Panel Management", icon: Server },
-  { id: "reports", label: "Reports", icon: FileText },
-  { id: "settings", label: "System Settings", icon: Settings },
+  { id: "overview",    label: "Overview",                  icon: Gauge },
+  { id: "live",        label: "Live Monitoring",            icon: Activity },
+  { id: "sensors",     label: "Sensor Network",             icon: Radio },
+  { id: "alerts",      label: "Alerts",                     icon: Bell },
+  { id: "analytics",   label: "Analytics & Prediction",     icon: LineChart },
+  { id: "management",  label: "Mine / Panel Management",    icon: Server },
+  { id: "reports",     label: "Reports",                    icon: FileText },
+  { id: "settings",    label: "System Settings",            icon: Settings },
 ];
 
 function OperatorPage() {
@@ -38,16 +36,15 @@ function OperatorPage() {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "overview": return <OverviewTab />;
-      case "live": return <LiveMonitoringTab />;
-      case "map": return <RiskMapTab />;
-      case "sensors": return <SensorNetworkTab />;
-      case "alerts": return <AlertCenterTab />;
-      case "analytics": return <AnalyticsTab />;
+      case "overview":   return <OverviewTab />;
+      case "live":       return <LiveMonitoringTab />;
+      case "sensors":    return <SensorNetworkTab />;
+      case "alerts":     return <AlertCenterTab />;
+      case "analytics":  return <AnalyticsTab />;
       case "management": return <ManagementTab />;
-      case "reports": return <ReportsTab />;
-      case "settings": return <div className="p-8 text-center text-muted-foreground">System Settings Placeholder</div>;
-      default: return <OverviewTab />;
+      case "reports":    return <ReportsTab />;
+      case "settings":   return <div className="p-8 text-center text-muted-foreground">System Settings Placeholder</div>;
+      default:           return <OverviewTab />;
     }
   };
 

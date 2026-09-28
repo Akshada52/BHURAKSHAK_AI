@@ -1,4 +1,4 @@
-import { Source, Layer, type LayerProps } from "react-map-gl/maplibre";
+import { Source, Layer, type LayerProps } from "react-map-gl/mapbox";
 import { 
   mineBoundaryGeoJSON, 
   panelsGeoJSON, 
@@ -56,8 +56,8 @@ export function MapLayers({ visible }: { visible: LayerVisibility }) {
     paint: { 'fill-color': '#ef4444', 'fill-opacity': 0.2 }
   };
 
-  // Node styles
-  const getNodeColor = ['match', ['get', 'status'], 'HIGH RISK', '#7f1d1d', 'WARNING', '#ef4444', 'WATCH', '#f59e0b', '#22c55e'];
+  // Node styles — cast as const so TS infers it as a valid MapLibre expression
+  const getNodeColor = ['match', ['get', 'status'], 'HIGH RISK', '#7f1d1d', 'WARNING', '#ef4444', 'WATCH', '#f59e0b', '#22c55e'] as unknown as string;
 
   const sdnLayer: LayerProps = {
     id: 'sdn-points',
