@@ -227,10 +227,12 @@ export function usePrincipleNodes(): FetchState<PrincipleNode[]> {
 
   const state = usePoll(fetchPrincipleNodes, fallback);
 
-  // Realtime: re-fetch when any principle_node row changes
+  // Realtime: re-fetch when any principle_node row changes.
+  // Channel name is unique per hook instance to prevent duplicate-subscription errors.
+  const pnChannelId = useRef(`pn-changes-${Math.random().toString(36).slice(2)}`);
   useEffect(() => {
     const channel = supabase
-      .channel("pn-changes")
+      .channel(pnChannelId.current)
       .on("postgres_changes",
         { event: "*", schema: "public", table: "principle_nodes" },
         () => state.refetch()
@@ -418,9 +420,10 @@ export function useDeformationChart(): FetchState<DeformationPoint[]> {
   })));
 
   // Realtime: re-fetch on any new reading
+  const deformChannelId = useRef(`deformation-realtime-${Math.random().toString(36).slice(2)}`);
   useEffect(() => {
     const channel = supabase
-      .channel("deformation-realtime")
+      .channel(deformChannelId.current)
       .on("postgres_changes",
         { event: "INSERT", schema: "public", table: "kml_sensor_readings" },
         () => state.refetch()
@@ -568,9 +571,10 @@ async function fetchAlerts(): Promise<LiveAlert[]> {
 export function useLiveAlerts(): FetchState<LiveAlert[]> {
   const state = usePoll(fetchAlerts, []);
 
+  const alertsChannelId = useRef(`alerts-realtime-${Math.random().toString(36).slice(2)}`);
   useEffect(() => {
     const channel = supabase
-      .channel("alerts-realtime")
+      .channel(alertsChannelId.current)
       .on("postgres_changes",
         { event: "*", schema: "public", table: "alerts" },
         () => state.refetch()
@@ -617,9 +621,10 @@ async function fetchAnomalies(): Promise<LiveAnomaly[]> {
 
 export function useLiveAnomalies(): FetchState<LiveAnomaly[]> {
   const state = usePoll(fetchAnomalies, demoAnomalies);
+  const anomaliesChannelId = useRef(`anomalies-realtime-${Math.random().toString(36).slice(2)}`);
   useEffect(() => {
     const channel = supabase
-      .channel("anomalies-realtime")
+      .channel(anomaliesChannelId.current)
       .on("postgres_changes",
         { event: "*", schema: "public", table: "anomalies" },
         () => state.refetch()

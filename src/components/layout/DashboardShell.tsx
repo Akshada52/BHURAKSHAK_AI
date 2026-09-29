@@ -3,6 +3,7 @@ import type { UserRole } from "@/types";
 import { demoSystemStatus, getRole } from "@/data";
 import { Header } from "./Header";
 import { Sidebar, type NavItem } from "./Sidebar";
+import { FloatingAIChat } from "./FloatingAIChat";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function DashboardShell({
@@ -72,6 +73,9 @@ export function DashboardShell({
           </div>
         </main>
       </div>
+
+      {/* Floating AI chat — visible on every page */}
+      <FloatingAIChat />
     </div>
   );
 }

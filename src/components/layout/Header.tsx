@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Mountain, Bell, User } from "lucide-react";
+import { Bell, User } from "lucide-react";
 import type { UserRole } from "@/types";
 
 export function Header({
@@ -16,11 +16,12 @@ export function Header({
       <div className="flex h-14 items-center gap-4 px-4 sm:px-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <span
-            className="flex size-8 items-center justify-center rounded"
-            style={{ backgroundColor: accent ?? "#f59e0b" }}
-          >
-            <Mountain className="size-4 text-white" aria-hidden />
+          <span className="flex size-9 items-center justify-center rounded-full overflow-hidden ring-2 ring-white/20 bg-white shrink-0">
+            <img
+              src="/Logo.png"
+              alt="BHURAKSHAK"
+              className="size-9 object-contain"
+            />
           </span>
           <span className="leading-tight">
             <span className="block font-bold text-sm tracking-[0.16em] text-white">BHURAKSHAK</span>
