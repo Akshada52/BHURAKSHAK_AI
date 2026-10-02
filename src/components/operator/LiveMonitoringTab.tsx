@@ -138,10 +138,13 @@ function KpiStrip() {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-      {cards.map((c) => (
+      {cards.map((c, idx) => (
         <div
           key={c.label}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm px-4 py-3.5 flex items-start gap-3 hover:shadow-md transition-shadow"
+          className={`bg-white rounded-xl border border-gray-200 shadow-sm px-4 py-3.5 flex items-start gap-3 hover:shadow-md transition-shadow${
+            /* On mobile (2-col), 5 cards → last card is alone; span it full width */
+            idx === 4 ? " col-span-2 sm:col-span-1" : ""
+          }`}
         >
           <div className="flex size-11 shrink-0 items-center justify-center rounded-lg mt-0.5" style={{ backgroundColor: c.iconBg }}>
             {c.icon}
@@ -518,10 +521,12 @@ function MapSection() {
   };
 
   return (
-    <div className="flex gap-3" style={{ minHeight: 520 }}>
-      {/* Map */}
-      <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden min-w-0">
-        <div className="relative flex-1">
+    /* Stack vertically on mobile, side-by-side on lg+ */
+    <div className="flex flex-col lg:flex-row gap-3 lg:min-h-[520px]">
+
+      {/* ── Map — 360px on mobile, fills full height on desktop ── */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden min-w-0 lg:flex-1 h-[360px] lg:h-auto">
+        <div className="relative flex-1 h-full">
           <MapCore
             onPanelClick={handleNodeClick}
             onNodeClick={handleNodeClick}
@@ -529,13 +534,14 @@ function MapSection() {
         </div>
       </div>
 
-      {/* Right sidebar — fixed height, internal scroll on SelectedNodePanel */}
-      <div className="w-72 shrink-0 flex flex-col gap-2" style={{ height: 520 }}>
+      {/* ── Right panel — full width on mobile, fixed 288px on desktop ── */}
+      <div className="flex flex-col gap-2 lg:w-72 lg:shrink-0 lg:h-[520px]">
 
         {/* Principal Nodes */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-3 py-2.5 shrink-0">
           <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Principal Nodes</p>
-          <div className="space-y-1">
+          {/* Mobile: 2-col grid. Desktop: single column list */}
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-1">
             {pnNodes.map((pn) => {
               const risk = classifyRisk(pn.lat, pn.lon, polygons);
               return (
@@ -550,29 +556,26 @@ function MapSection() {
                       : "hover:bg-gray-50 border border-transparent"
                   }`}
                 >
-                  {/* Left: ID + icon */}
-                  <span className="font-bold text-gray-700 font-mono flex items-center gap-1.5 shrink-0">
+                  <span className="font-bold text-gray-700 font-mono flex items-center gap-1 shrink-0">
                     {risk !== "none" && (
                       <AlertTriangle className={`size-2.5 shrink-0 ${risk === "high" ? "text-red-500" : "text-amber-500"}`} />
                     )}
                     {pn.id}
                   </span>
-                  {/* Middle: node count */}
                   <span className="text-gray-400 text-[10px] flex-1 text-center">{pn.connectedSensors} nodes</span>
-                  {/* Right: risk or status badge */}
                   {risk !== "none" ? (
                     <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
                       risk === "high"
                         ? "bg-red-100 text-red-700 border border-red-300"
                         : "bg-amber-100 text-amber-700 border border-amber-300"
                     }`}>
-                      {risk === "high" ? "🔴 High Risk" : "🟡 Anomaly"}
+                      {risk === "high" ? "🔴 High" : "🟡 Watch"}
                     </span>
                   ) : (
                     <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
-                      pn.status === "Online"   ? "bg-green-50 text-green-700"
+                      pn.status === "Online" ? "bg-green-50 text-green-700"
                       : pn.status === "Degraded" ? "bg-amber-50 text-amber-700"
-                      :                            "bg-red-50 text-red-700"
+                      : "bg-red-50 text-red-700"
                     }`}>
                       <Dot color={pn.status === "Online" ? "#22c55e" : pn.status === "Degraded" ? "#f59e0b" : "#ef4444"} />
                       {pn.status}
@@ -584,7 +587,7 @@ function MapSection() {
           </div>
         </div>
 
-        {/* Selected node panel — fills remaining height, scrolls internally */}
+        {/* Selected node panel */}
         <SelectedNodePanel node={selectedNode} polygons={polygons} />
       </div>
     </div>

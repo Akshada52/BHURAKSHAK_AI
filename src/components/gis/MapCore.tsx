@@ -6,7 +6,7 @@ import Map, {
 } from "react-map-gl/mapbox";
 import {
   Search, Layers, Satellite, ChevronDown,
-  Maximize2, Minimize2, Building2, X,
+  Maximize2, Minimize2, Building2, X, ChevronUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -184,26 +184,33 @@ function ToolbarDropdown({
   open,
   onToggle,
   children,
+  hideLabel = false,
 }: {
   icon: React.ElementType;
   label: string;
   open: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  /** On mobile: show only icon, expand label on sm+ */
+  hideLabel?: boolean;
 }) {
   return (
     <div className="relative">
       <button
         onClick={onToggle}
-        className={`flex items-center gap-1.5 h-8 px-3 rounded-lg border text-[11px] font-semibold transition-all whitespace-nowrap ${
+        className={`flex items-center gap-1.5 h-8 px-2 sm:px-3 rounded-lg border text-[11px] font-semibold transition-all ${
           open
             ? "bg-white border-blue-400 text-blue-600 shadow-sm"
             : "bg-white/90 backdrop-blur-sm border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 shadow-sm"
         }`}
       >
         <Icon className="size-3.5 shrink-0" />
-        <span>{label}</span>
-        <ChevronDown className={`size-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        {hideLabel ? (
+          <span className="hidden sm:inline whitespace-nowrap">{label}</span>
+        ) : (
+          <span className="whitespace-nowrap">{label}</span>
+        )}
+        <ChevronDown className={`size-3 transition-transform ${open ? "rotate-180" : ""} ${hideLabel ? "hidden sm:block" : ""}`} />
       </button>
 
       <AnimatePresence>
@@ -216,6 +223,61 @@ function ToolbarDropdown({
             className="absolute top-full mt-1.5 right-0 z-50 bg-white border border-gray-200 rounded-xl shadow-xl min-w-[200px] overflow-hidden"
           >
             {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LEGEND PANEL — collapsible, compact on mobile
+───────────────────────────────────────────────────────────────────────────── */
+
+function LegendPanel({ kmlVisible }: { kmlVisible: Record<KmlLayerId, boolean> }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = KML_LAYERS.filter((l) => kmlVisible[l.id]);
+
+  return (
+    <div className="absolute bottom-10 left-3 z-10">
+      {/* Collapsed pill — always visible */}
+      <button
+        onClick={() => setExpanded((p) => !p)}
+        className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm border border-gray-200/80 rounded-lg shadow-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500 hover:bg-white transition-colors"
+      >
+        <span
+          className="size-2 rounded-full shrink-0"
+          style={{ backgroundColor: visible[0]?.strokeColor ?? "#888" }}
+        />
+        <span>Legend</span>
+        <span className="text-[9px] font-normal text-gray-400">
+          {visible.length}/{KML_LAYERS.length}
+        </span>
+        {expanded
+          ? <ChevronDown className="size-3 text-gray-400" />
+          : <ChevronUp   className="size-3 text-gray-400" />}
+      </button>
+
+      {/* Expanded list */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0,  scale: 1    }}
+            exit={{    opacity: 0, y: 6,  scale: 0.97 }}
+            transition={{ duration: 0.14 }}
+            className="absolute bottom-full mb-1.5 left-0 bg-white/95 backdrop-blur-sm border border-gray-200/80 rounded-xl shadow-lg px-3 py-2 pointer-events-none min-w-[160px]"
+          >
+            <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Active Layers</p>
+            {visible.length > 0
+              ? visible.map(({ id, label, emoji, strokeColor }) => (
+                  <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
+                    <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: strokeColor ?? "#888" }} />
+                    <span className="text-[10px] font-medium text-gray-700">{emoji} {label}</span>
+                  </div>
+                ))
+              : <p className="text-[10px] text-gray-400 italic">All layers hidden</p>
+            }
           </motion.div>
         )}
       </AnimatePresence>
@@ -387,7 +449,7 @@ export function MapCore({
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
             onFocus={() => setShowSuggestions(true)}
-            placeholder="Search location, node ID, coordinates..."
+            placeholder="Search location or node…"
             className="w-full h-8 pl-8 pr-8 rounded-lg border border-gray-200 bg-white text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-all"
           />
           {searchQuery && (
@@ -434,12 +496,13 @@ export function MapCore({
           </AnimatePresence>
         </div>
 
-        {/* ── Mine selector ────────────────────────────────────────────────── */}
+      {/* ── Mine selector ────────────────────────────────────────────────── */}
         <ToolbarDropdown
           icon={Building2}
           label={currentMineSite.label}
           open={openDropdown === "mine"}
           onToggle={() => toggleDropdown("mine")}
+          hideLabel
         >
           <div className="py-1">
             <p className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">
@@ -469,6 +532,7 @@ export function MapCore({
           label="Layers"
           open={openDropdown === "layers"}
           onToggle={() => toggleDropdown("layers")}
+          hideLabel
         >
           <div className="px-3 pt-3 pb-1">
             <div className="flex items-center justify-between mb-2">
@@ -519,6 +583,7 @@ export function MapCore({
           label={currentStyleOption.label}
           open={openDropdown === "basemap"}
           onToggle={() => toggleDropdown("basemap")}
+          hideLabel
         >
           <div className="py-1.5 px-1">
             {STYLE_OPTIONS.map(({ key, label, emoji }) => (
@@ -582,18 +647,7 @@ export function MapCore({
       </div>
 
       {/* ── Live legend (bottom-left, above nav controls) ─────────────────── */}
-      <div className="absolute bottom-10 left-3 z-10 bg-white/90 backdrop-blur-sm border border-gray-200/80 rounded-xl shadow-md px-3 py-2 text-xs pointer-events-none">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Legend</p>
-        {KML_LAYERS.filter((l) => kmlVisible[l.id]).map(({ id, label, emoji, strokeColor }) => (
-          <div key={id} className="flex items-center gap-2 mb-1 last:mb-0">
-            <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: strokeColor ?? "#888" }} />
-            <span className="font-medium text-gray-700">{emoji} {label}</span>
-          </div>
-        ))}
-        {KML_LAYERS.every((l) => !kmlVisible[l.id]) && (
-          <p className="text-gray-400 italic">All layers hidden</p>
-        )}
-      </div>
+      <LegendPanel kmlVisible={kmlVisible} />
 
       {/* ── Node detail panel ─────────────────────────────────────────────── */}
       {activeNodeId && (

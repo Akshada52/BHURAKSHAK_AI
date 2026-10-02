@@ -8,7 +8,7 @@
  *  - DeploymentClassification → live node counts grouped by pnId
  */
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import {
   Radio, Wifi, Battery, AlertTriangle, XCircle,
   RefreshCw, Activity, Signal, Clock,
@@ -125,20 +125,20 @@ function NetworkOverview() {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
       {cards.map((c) => (
         <div key={c.label}
-          className="bg-white rounded-xl border border-gray-200 shadow-sm px-4 py-3.5 flex items-start gap-3 hover:shadow-md transition-shadow"
+          className="bg-white rounded-xl border border-gray-200 shadow-sm px-3 py-2.5 sm:px-4 sm:py-3.5 flex items-start gap-2 sm:gap-3 hover:shadow-md transition-shadow"
           style={{ borderTop: `3px solid ${c.border}` }}
         >
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg mt-0.5"
+          <div className="flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-lg mt-0.5"
             style={{ backgroundColor: c.bg }}>
-            {c.icon}
+            <span className="[&>svg]:size-4 sm:[&>svg]:size-6">{c.icon}</span>
           </div>
           <div className="min-w-0">
-            <p className="text-2xl font-extrabold text-gray-800 font-mono leading-tight">{c.value}</p>
-            <p className="text-[11px] font-semibold text-gray-600 leading-tight mt-0.5">{c.label}</p>
-            <p className="text-[10px] font-medium mt-0.5" style={{ color: c.subColor }}>{c.sub}</p>
+            <p className="text-xl sm:text-2xl font-extrabold text-gray-800 font-mono leading-tight">{c.value}</p>
+            <p className="text-[10px] sm:text-[11px] font-semibold text-gray-600 leading-tight mt-0.5 truncate">{c.label}</p>
+            <p className="text-[9px] sm:text-[10px] font-medium mt-0.5 truncate" style={{ color: c.subColor }}>{c.sub}</p>
           </div>
         </div>
       ))}
@@ -374,6 +374,44 @@ interface KmlNodesState {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   TOPOLOGY LEGEND — collapsible pill (avoids overlap on mobile)
+───────────────────────────────────────────────────────────────────────────── */
+
+function TopologyLegend() {
+  const [open, setOpen] = useState(false);
+
+  const ITEMS = [
+    { el: <span className="size-2 rounded-full bg-blue-500 inline-block" />,           label: "Sensor (SN)" },
+    { el: <span className="size-2.5 rounded-full border-2 border-green-600 inline-block" />, label: "Principal (PN)" },
+    { el: <span className="size-1.5 rounded-full bg-amber-500 inline-block" />,         label: "Watch" },
+    { el: <span className="size-1.5 rounded-full bg-red-500 inline-block" />,           label: "Failed" },
+    { el: <span className="inline-block w-4 h-px bg-blue-400" />,                       label: "Active Link" },
+    { el: <span className="inline-block w-4" style={{ borderTop: "2px dashed #f59e0b" }} />, label: "Weak Link" },
+  ];
+
+  return (
+    <div className="absolute top-2 left-2 z-10">
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-1.5 bg-white/95 border border-gray-200 rounded-lg px-2 py-1 shadow text-[10px] font-bold text-gray-600 hover:bg-white transition-colors"
+      >
+        <span className="size-2 rounded-full bg-blue-500 inline-block" />
+        Legend
+        <svg className={`size-3 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+
+      {open && (
+        <div className="absolute top-full mt-1 left-0 bg-white/98 border border-gray-200 rounded-lg px-3 py-2 shadow-lg text-[10px] font-semibold text-gray-600 flex flex-col gap-1.5 pointer-events-none min-w-[140px]">
+          {ITEMS.map(({ el, label }) => (
+            <span key={label} className="flex items-center gap-1.5">{el}{label}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    2 + 3.  TOPOLOGY MAP  +  LIVE NODE DETAIL PANEL
 ───────────────────────────────────────────────────────────────────────────── */
 
@@ -437,23 +475,23 @@ function TopologyMapAndDetail({ kmlNodes }: { kmlNodes: KmlNodesState }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-gray-100">
-        <div>
+      <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-3 border-b border-gray-100">
+        <div className="min-w-0">
           <h3 className="text-sm font-bold text-gray-800">Network Topology Map</h3>
-          <p className="text-[11px] text-gray-400 mt-0.5">
+          <p className="text-[10px] text-gray-400 mt-0.5 leading-snug">
             Real KML coordinates — {snNodes.length} sensor nodes · {pnNodes.length} principal nodes · Moonidih Colliery
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {(["all", "normal", "weak", "warning"] as TopologyFilter[]).map((f) => (
             <button key={f} onClick={() => setFilter(f)}
-              className={`text-[11px] px-2.5 py-1 rounded-full font-semibold border transition-colors ${
+              className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border transition-colors ${
                 filter === f ? "bg-blue-600 text-white border-blue-600" : "text-gray-600 border-gray-200 hover:border-blue-300"
               }`}>
               {f === "all" ? "All Nodes" : f === "normal" ? "Healthy" : f === "weak" ? "Weak Signal" : "Failed"}
             </button>
           ))}
-          <span className="text-[11px] text-gray-400 flex items-center gap-1">
+          <span className="text-[10px] text-gray-400 flex items-center gap-1">
             {isLoading
               ? <><RefreshCw className="size-3 animate-spin text-blue-400" /> Loading…</>
               : <><Clock className="size-3" /> Live</>
@@ -462,18 +500,11 @@ function TopologyMapAndDetail({ kmlNodes }: { kmlNodes: KmlNodesState }) {
         </div>
       </div>
 
-      <div className="flex min-h-[420px]">
-        {/* SVG Canvas */}
-        <div className="flex-1 min-w-0 relative overflow-hidden">
-          {/* Legend */}
-          <div className="absolute top-2 left-2 z-10 bg-white/95 border border-gray-200 rounded-lg px-3 py-2 shadow text-[10px] font-semibold text-gray-600 flex flex-wrap gap-x-3 gap-y-1 max-w-xs">
-            <span className="flex items-center gap-1"><span className="size-2 rounded-full bg-blue-500 inline-block" />Sensor (SN)</span>
-            <span className="flex items-center gap-1"><span className="size-2.5 rounded-full border-2 border-green-600 inline-block" />Principal (PN)</span>
-            <span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-amber-500 inline-block" />Watch</span>
-            <span className="flex items-center gap-1"><span className="size-1.5 rounded-full bg-red-500 inline-block" />Failed</span>
-            <span className="flex items-center gap-1"><span className="inline-block w-4 h-px bg-blue-400" />Active Link</span>
-            <span className="flex items-center gap-1"><span className="inline-block w-4" style={{ borderTop: "2px dashed #f59e0b" }} />Weak Link</span>
-          </div>
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: 460 }}>
+        {/* SVG Canvas — 50% on desktop */}
+        <div className="lg:w-1/2 min-w-0 relative overflow-hidden">
+          {/* Legend — collapsible pill on mobile */}
+          <TopologyLegend />
 
           {isLoading ? (
             <div className="flex items-center justify-center h-[460px] gap-2 text-sm text-gray-400">
@@ -762,8 +793,8 @@ function TopologyMapAndDetail({ kmlNodes }: { kmlNodes: KmlNodesState }) {
           )}
         </div>
 
-        {/* Live Node Detail Panel */}
-        <div className="w-[256px] shrink-0 border-l border-gray-100 flex flex-col bg-white overflow-hidden" style={{ minHeight: SVG_H }}>
+        {/* Live Node Detail Panel — full-width below map on mobile, 50% on desktop */}
+        <div className="lg:w-1/2 shrink-0 border-t lg:border-t-0 lg:border-l border-gray-100 flex flex-col bg-white overflow-hidden" style={{ minHeight: 200 }}>
           {selectedId === null ? (
             <div className="flex flex-col items-center justify-center flex-1 gap-2 text-center px-4 py-10">
               <div className="size-12 rounded-full bg-gray-100 flex items-center justify-center">

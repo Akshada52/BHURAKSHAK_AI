@@ -144,10 +144,16 @@ Rules: Keep answers under 100 words. Flag hazards ⚠️. Never fabricate data.`
 
   return (
     <div
-      className="fixed flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden"
+      className="fixed flex flex-col bg-white border border-gray-200 overflow-hidden rounded-2xl"
       style={{
-        bottom: 90, right: 24,
-        width: 340, height: 480,
+        /* mobile: stretch almost edge-to-edge, above bottom nav (~64px) */
+        bottom:  "calc(4rem + 0.75rem)",
+        right:   "0.75rem",
+        left:    "0.75rem",
+        maxWidth: "340px",
+        margin:  "0 auto",          /* centre on very wide mobile screens */
+        /* will be overridden on sm+ via the sm:* classes below */
+        height:  "min(440px, calc(100dvh - 8rem))",
         zIndex: 9999,
         boxShadow: "0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.08)",
       }}
@@ -306,8 +312,10 @@ export function FloatingAIChat() {
         onClick={() => setOpen(v => !v)}
         title="BHURAKSHAK AI"
         aria-label="Open BHURAKSHAK AI chat"
-        className="fixed bottom-6 right-6 z-[9998] size-16 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden bg-white"
+        className="fixed z-[9998] size-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 overflow-hidden bg-white"
         style={{
+          bottom: "calc(4rem + 0.5rem)",   /* sits just above the bottom nav on mobile */
+          right: "1rem",
           boxShadow: open
             ? "0 8px 32px rgba(22,163,74,0.45), 0 0 0 3px rgba(22,163,74,0.20)"
             : "0 8px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10), 0 0 0 3px rgba(255,255,255,0.90)",

@@ -12,6 +12,8 @@ interface KpiCardProps {
   trend?: { direction: "up" | "down" | "flat"; text: string };
   className?: string;
   valueClassName?: string;
+  /** Reduces padding, icon, and text sizes — useful on mobile grids */
+  compact?: boolean;
 }
 
 export function KpiCard({
@@ -25,6 +27,7 @@ export function KpiCard({
   trend,
   className,
   valueClassName,
+  compact = false,
 }: KpiCardProps) {
   const ic = iconColor ?? "#3b82f6";
   const ib = iconBg ?? ic + "1a";
@@ -32,36 +35,54 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "bg-white rounded-lg border border-gray-200 shadow-sm p-5 flex items-center gap-4 hover:shadow-md transition-shadow",
+        "bg-white rounded-lg border border-gray-200 shadow-sm flex items-center hover:shadow-md transition-shadow",
+        compact ? "p-3 gap-2.5" : "p-5 gap-4",
         className
       )}
     >
       {/* Icon box */}
       {Icon && (
         <div
-          className="flex size-12 shrink-0 items-center justify-center rounded-lg"
+          className={cn(
+            "shrink-0 flex items-center justify-center rounded-lg",
+            compact ? "size-8" : "size-12"
+          )}
           style={{ backgroundColor: ib }}
         >
-          <Icon className="size-6" style={{ color: ic }} aria-hidden />
+          <Icon
+            className={compact ? "size-4" : "size-6"}
+            style={{ color: ic }}
+            aria-hidden
+          />
         </div>
       )}
 
       {/* Text */}
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 truncate">{label}</p>
-        <div className="flex items-baseline gap-1 mt-1">
+        <p className={cn(
+          "font-semibold uppercase tracking-wider text-gray-500 truncate",
+          compact ? "text-[9px]" : "text-xs"
+        )}>
+          {label}
+        </p>
+        <div className="flex items-baseline gap-1 mt-0.5">
           <span
             className={cn(
-              "font-mono text-2xl font-extrabold text-gray-800 tracking-tight",
+              "font-mono font-extrabold text-gray-800 tracking-tight",
+              compact ? "text-lg" : "text-2xl",
               valueClassName
             )}
           >
             {value}
           </span>
-          {unit && <span className="text-sm font-semibold text-gray-400">{unit}</span>}
+          {unit && (
+            <span className={cn("font-semibold text-gray-400", compact ? "text-xs" : "text-sm")}>
+              {unit}
+            </span>
+          )}
         </div>
         {(hint || trend) && (
-          <div className="mt-1 text-xs text-gray-400">
+          <div className={cn("text-gray-400 truncate", compact ? "text-[9px] mt-0" : "text-xs mt-1")}>
             {trend ? (
               <span
                 className={cn(

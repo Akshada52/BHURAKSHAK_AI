@@ -1,9 +1,9 @@
 import { Activity, Bell, Radio, ShieldAlert, Wifi, Clock, AlertTriangle, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { KpiCard } from "@/components/common/KpiCard";
 import { MapContainer } from "@/components/common/Panels";
-import { demoOperatorAlerts } from "@/data/operatorMocks";
 import { MapCore } from "@/components/gis/MapCore";
 import { useLiveKpi, useLiveAlerts, useKmlSensorNodes } from "@/hooks/useLiveMonitoring";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const severityBadge: Record<string, string> = {
   warning: "bg-red-100 text-red-700",
@@ -22,6 +22,9 @@ export function OverviewTab() {
   const { data: alerts,  loading: alertLoading  } = useLiveAlerts();
   const { data: nodes,   loading: nodesLoading  } = useKmlSensorNodes();
 
+  // Compact cards on mobile (below sm = 640px)
+  const isMobile = !useMediaQuery("(min-width: 640px)");
+
   // Top 8 nodes for the table
   const topNodes = nodes.slice(0, 8);
 
@@ -39,7 +42,8 @@ export function OverviewTab() {
     <div className="space-y-5">
 
       {/* ── KPI row ──────────────────────────────────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Mobile: 2-col compact; sm+: 4-col full size */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
         <KpiCard
           label="Current Mine Risk"
           value={kpiLoading ? "—" : mineRisk}
@@ -48,6 +52,7 @@ export function OverviewTab() {
           iconColor={riskColor}
           iconBg={riskBg}
           valueClassName={riskText}
+          compact={isMobile}
         />
         <KpiCard
           label="Active Warnings"
@@ -57,6 +62,7 @@ export function OverviewTab() {
           iconColor="#ef4444"
           iconBg="#fef2f2"
           valueClassName="text-red-600"
+          compact={isMobile}
         />
         <KpiCard
           label="High-Risk Zones"
@@ -66,6 +72,7 @@ export function OverviewTab() {
           iconColor="#ef4444"
           iconBg="#fef2f2"
           valueClassName="text-red-600"
+          compact={isMobile}
         />
         <KpiCard
           label="Latest Alert"
@@ -74,6 +81,7 @@ export function OverviewTab() {
           hint={latestAlert ? latestAlert.location : "All clear"}
           iconColor="#6366f1"
           iconBg="#eef2ff"
+          compact={isMobile}
         />
         <KpiCard
           label="Sensor Nodes Online"
@@ -83,6 +91,7 @@ export function OverviewTab() {
           iconColor="#22c55e"
           iconBg="#f0fdf4"
           valueClassName="text-green-600"
+          compact={isMobile}
         />
         <KpiCard
           label="Nodes Offline"
@@ -91,6 +100,7 @@ export function OverviewTab() {
           hint="Status: Warning"
           iconColor="#64748b"
           iconBg="#f8fafc"
+          compact={isMobile}
         />
         <KpiCard
           label="Network Health"
@@ -100,6 +110,7 @@ export function OverviewTab() {
           iconColor="#22c55e"
           iconBg="#f0fdf4"
           valueClassName="text-green-600"
+          compact={isMobile}
         />
         <KpiCard
           label="Principal Nodes"
@@ -108,6 +119,7 @@ export function OverviewTab() {
           hint="PN1 – PN4 all online"
           iconColor="#3b82f6"
           iconBg="#eff6ff"
+          compact={isMobile}
         />
       </div>
 
