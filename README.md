@@ -8,7 +8,8 @@
 **Problem Statement 26025 · Ministry of Coal / Coal India Limited · Hardware · Smart Automation**
 
 <!-- Replace with your hero image / platform banner -->
-![Uploading image.png…]()
+<img width="1337" height="767" alt="image" src="https://github.com/user-attachments/assets/1f2ff19e-095f-44de-a6a8-572c5a16ee39" />
+
 
 
 `ESP32` · `LoRa 865–867 MHz` · `Edge AI` · `Physics-informed ML` · `Graph + Temporal Deep Learning` · `GIS Decision Support`
