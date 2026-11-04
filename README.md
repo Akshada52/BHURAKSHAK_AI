@@ -1,6 +1,7 @@
 <div align="center">
 
-# BHURAKSHAK 
+# BHURAKSHAK <img width="1355" height="767" alt="image" src="https://github.com/user-attachments/assets/da6ea082-a8ff-465b-859b-81d16333506c" />
+
 
 ### AI-Enabled, Low-Cost, Real-Time Mine Subsidence Monitoring, Prediction and Early Warning for Underground Coal Mines in India
 
