@@ -162,8 +162,10 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.9 Hardware Prototype
 
 <p align="center">
-  <img src="assets/hardware/01-node-prototype.png" alt="Sensor node prototype" width="420"/>
-  <img src="assets/hardware/02-gateway-prototype.png" alt="Gateway prototype" width="420"/>
+  
+  <img width="423" height="238" alt="INCYBIC" src="https://github.com/user-attachments/assets/3e3ee4b2-bd46-4c20-a5ad-6b8f3d881ce1" />
+  <img width="419" height="236" alt="INCYBIC (1)" src="https://github.com/user-attachments/assets/bd1121dd-ca10-41a7-af92-20455f7b0799" />
+
 </p>
 
 ---
