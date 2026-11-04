@@ -142,16 +142,16 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.5 Event Timeline
 
 <p align="center">
-<img width="1050" height="761" alt="image" src="https://github.com/user-attachments/assets/b5e708b8-029c-4901-bee7-403f71009d94" />
+<img width="1337" height="761" alt="Screenshot 2026-11-04 110545" src="https://github.com/user-attachments/assets/9a6c2619-8efd-46a2-a31d-90a402b53dff" />
 </p>
 
 *Connectivity states (ONLINE / DEGRADED / ISOLATED / DORMANT-LOG), duty-cycle utilisation, backhaul queue depth, failover history.*
 
 ### 4.7 Role-Based Views
 
-| Operator / Shift In-charge | Planner / Surveyor | Regulator |
-|---|---|---|
-| <img src="assets/platform/07-role-operator.png" width="280"/> | <img src="assets/platform/08-role-planner.png" width="280"/> | <img src="assets/platform/09-role-regulator.png" width="280"/> |
+<p align="center">
+<img width="1348" height="763" alt="Screenshot 2026-11-04 111253" src="https://github.com/user-attachments/assets/88fea86e-1f1e-44af-ab2d-979c70f8df73" />
+</p>
 
 ### 4.8 Simulator Control Panel
 
