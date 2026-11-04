@@ -142,17 +142,7 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.5 Event Timeline
 
 <p align="center">
-  <p align="center">
-  <img width="1337" height="761" alt="image" src="https://github.com/user-attachments/assets/5ca43afd-96ab-4184-a530-2085d28157f1" />
-  </p>
-### 4.6 Network Health View
-
-<p align="center">
-  <img width="1333" height="635" alt="Screenshot 2026-11-04 110655" src="https://github.com/user-attachments/assets/cfff0fba-1776-4351-b9be-b292ad13ee42" />
-</p>
-
-<p align="center">
-<img width="1339" height="610" alt="Screenshot 2026-11-04 110730" src="https://github.com/user-attachments/assets/5933d14b-98ba-4cb4-a5d0-d9f4434aeeef" />
+<img width="1050" height="761" alt="image" src="https://github.com/user-attachments/assets/b5e708b8-029c-4901-bee7-403f71009d94" />
 </p>
 
 *Connectivity states (ONLINE / DEGRADED / ISOLATED / DORMANT-LOG), duty-cycle utilisation, backhaul queue depth, failover history.*
