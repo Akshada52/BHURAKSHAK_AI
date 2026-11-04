@@ -1,7 +1,6 @@
 <div align="center">
 
 # BHURAKSHAK 
-<img width="1355" height="767" alt="image" src="https://github.com/user-attachments/assets/da6ea082-a8ff-465b-859b-81d16333506c" />
 
 
 ### AI-Enabled, Low-Cost, Real-Time Mine Subsidence Monitoring, Prediction and Early Warning for Underground Coal Mines in India
@@ -9,7 +8,8 @@
 **Problem Statement 26025 · Ministry of Coal / Coal India Limited · Hardware · Smart Automation**
 
 <!-- Replace with your hero image / platform banner -->
-<img src="assets/platform/00-hero-banner.png" alt="BHURAKSHAK platform banner" width="900"/>
+<img width="1355" height="767" alt="image" src="https://github.com/user-attachments/assets/99a48cea-71a2-4982-a34d-3a9609e4de05" />
+
 
 `ESP32` · `LoRa 865–867 MHz` · `Edge AI` · `Physics-informed ML` · `Graph + Temporal Deep Learning` · `GIS Decision Support`
 
