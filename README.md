@@ -116,7 +116,8 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.2 GIS Deformation Map with Uncertainty
 
 <p align="center">
-  <img src="assets/platform/02-gis-deformation-map.png" alt="GIS deformation map with kriging surface and confidence overlay" width="900"/>
+  <img width="1365" height="767" alt="image" src="https://github.com/user-attachments/assets/ef665270-0865-4097-abf6-0a8f27b06656" />
+
 </p>
 
 *Kriging-interpolated deformation surface with a confidence overlay so "confidently flat" is visually distinct from "unmonitored".*
@@ -124,7 +125,8 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.3 Risk Zones and Forecast
 
 <p align="center">
-  <img src="assets/platform/03-risk-zones-forecast.png" alt="Risk zones and forecast" width="900"/>
+  <img width="1363" height="767" alt="image" src="https://github.com/user-attachments/assets/8cb1601f-5eca-41ee-94be-f6472e3dbbcb" />
+
 </p>
 
 *Graded risk bands (not binary), DBSCAN-delineated zone polygons, and 7 / 14 / 30-day forecast layers.*
