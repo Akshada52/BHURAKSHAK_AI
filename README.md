@@ -55,36 +55,9 @@ When coal is extracted from beneath the ground, the surface above can sink. This
 
 > **Core idea:** each layer answers only the question it has enough information to answer correctly. No layer may output a risk judgment without a physical prior to compare against and an explicit confidence value attached.
 
-```text
-PHYSICAL GROUND
-      │
-      ▼
-┌─────────────────────────────┐
-│ ESP32 SENSOR NODE            │  Sense → Validate → Correct → Baseline
-│                              │  → Fast/Slow detection → Physics residual
-│                              │  → Fusion → Confidence → State
-└──────────────┬───────────────┘
-               │  LoRa (neighbour evidence + telemetry)
-               ▼
-┌─────────────────────────────┐
-│ PRINCIPAL / GATEWAY (×2)     │  Consensus → Kriging with uncertainty
-│ active–standby               │  → Cluster-loss detection → Adaptive sampling
-│                              │  → Store-and-forward → Evidence packet
-└──────────────┬───────────────┘
-               ▼
-┌─────────────────────────────┐
-│ CLOUD                        │  Physics residual as feature
-│                              │  XGBoost / Isolation Forest / Residual-VAE
-│                              │  Attention-LSTM / GAT / GNN+GRU (shadow-gated)
-└──────────────┬───────────────┘
-               ▼
-┌─────────────────────────────┐
-│ BHURAKSHAK DECISION SUPPORT        │  GIS map · Risk zones · Confidence bands
-│                              │  Explainable evidence chain · Operator workflow
-└──────────────────────────────┘
-```
-
----
+<p align="center">
+<img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/f3ff5996-8d81-4710-8381-d19dec3f3b10" />
+</p>
 
 ## 2. The Problem
 
