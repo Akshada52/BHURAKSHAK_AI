@@ -364,19 +364,13 @@ Consequences that shape the whole design: bit-packed payloads, ~1 % duty-cycle c
 ### 7.2 Star-of-Meshes Topology
 
 <p align="center">
-  <img src="assets/architecture/07-communication-topology.png" alt="Star-of-meshes communication topology" width="900"/>
+  <img width="2172" height="724" alt="image" src="https://github.com/user-attachments/assets/d030810c-5e51-4481-89a1-81ca495dd0a0" />
 </p>
 
-```text
-                    CLOUD
-                      │   MQTT over TLS (cellular / fallback)
-        ┌─────────────┴─────────────┐
-        │  PRINCIPAL / GATEWAY       │  active–standby pair
-        └─────────────┬─────────────┘
-                      │ LoRa
-       ┌──────┬───────┼───────┬──────┐
-      N01    N02     N03     N04    N05   ← 1-hop neighbour evidence between nodes
-```
+<p align="center">
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/461ee219-752f-4a12-b297-51128ca236ef" />
+</p>
+
 
 - **Node ↔ Node:** single-hop only, lightweight evidence exchange.
 - **Node ↔ Gateway:** direct (star), with **one** pre-configured relay hop if the direct link degrades.
