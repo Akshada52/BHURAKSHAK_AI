@@ -156,7 +156,13 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.8 Simulator Control Panel
 
 <p align="center">
-  <img src="assets/platform/10-simulator-ui.png" alt="BHURAKSHAK simulator" width="900"/>
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/b43e099c-ac97-4295-8ba3-3326199501da" />
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/7677c94e-81f6-4243-8e09-ce150c26c34a" />
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/bf4f3c57-09a8-4fc7-8c12-a3c0c9c4d0ac" />
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/4604d862-d492-4637-aa8c-fb5ae596f23e" />
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/7c8d38e9-3505-428f-930b-c57acb03f53d" />
+  <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/f4479de4-21a9-44cc-83bd-366fb9efa348" />
+
 </p>
 
 ### 4.9 Hardware Prototype
