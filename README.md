@@ -133,7 +133,8 @@ A wireless mesh alone is not unique. The value is in the **combination**:
 ### 4.1 Live Operations Dashboard
 
 <p align="center">
-  <img src="assets/platform/01-live-dashboard.png" alt="Live operations dashboard" width="900"/>
+  <img width="1339" height="763" alt="image" src="https://github.com/user-attachments/assets/4e497b25-08be-4c6d-bd86-a5bf94bdfce7" />
+
 </p>
 
 *Live map with nodes coloured by state (Stable / Watch / Risk / Fault), active alerts, acknowledgement controls and node-health summary.*
